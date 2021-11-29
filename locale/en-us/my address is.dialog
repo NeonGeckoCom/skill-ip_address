@@ -1,2 +1,3 @@
-My network I.P. address is {{ip}}
-I'm at I.P. address {{ip}}
+My {{pub}} network I.P. address is {{ip}}
+I'm at {{pub}} I.P. address {{ip}}
+
