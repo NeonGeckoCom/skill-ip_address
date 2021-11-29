@@ -29,3 +29,13 @@ Use the [link](https://neongecko.com/ContactUs) or [submit an issue on GitHub](h
 [reginaneon](https://github.com/reginaneon)
 Ryan Sipes
 Steve Penrod
+
+## Category
+**Configuration**
+
+## Tags
+#IP-address
+#IPaddress
+#network-address
+#network
+#system
