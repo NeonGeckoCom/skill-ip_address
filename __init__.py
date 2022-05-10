@@ -40,8 +40,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
-from netifaces import interfaces, ifaddresses, AF_INET
+from ifaddr import get_adapters
 from requests import get
 from adapt.intent import IntentBuilder
 from neon_utils.skills.neon_skill import NeonSkill, LOG
@@ -49,87 +48,96 @@ from neon_utils.skills.neon_skill import NeonSkill, LOG
 from mycroft.skills.core import intent_handler
 
 
-class IPSkill(NeonSkill):
-    SEC_PER_LETTER = 0.65  # timing based on Mark 1 screen
-    LETTERS_PER_SCREEN = 9.0
+# TODO: Add something equivalent to neon_utils.net_utils
+def get_ifaces(ignore_list=None):
+    """ Build a dict with device names and their associated ip address.
 
+    Arguments:
+        ignore_list(list): list of devices to ignore. Defaults to "lo"
+
+    Returns:
+        (dict) with device names as keys and ip addresses as value.
+    """
+    ignore_list = ignore_list or ['lo']
+    res = {}
+    for iface in get_adapters():
+        # ignore "lo" (the local loopback)
+        if iface.ips and iface.name not in ignore_list:
+            for addr in iface.ips:
+                if addr.is_IPv4:
+                    res[iface.nice_name] = addr.ip
+                    break
+    return res
+
+
+class IPSkill(NeonSkill):
     def __init__(self):
         super(IPSkill, self).__init__(name="IPSkill")
 
-    @intent_handler(IntentBuilder("IPIntent").require("query").require("IP").optionally("public"))
+    @intent_handler(IntentBuilder("IPIntent").require("query").require("IP")
+                    .optionally("public"))
     def handle_query_ip(self, message):
-
-        # Build a list of interfaces and addresses
-        addr = {}
-
+        """
+        Handle a user request for the IP Address
+        :param message: Message associated with request
+        """
         if message.data.get("public"):
             public = True
-            addr['public'] = get('https://api.ipify.org').text
-            if self.server:
-                addr['public'] = ""  # TODO: Lookup socket IP
+            addr = {'public': self._get_public_ip_address()}
         else:
             public = False
-            # TODO: If self.server do something?
-            for ifaceName in interfaces():
-                addresses = [
-                    i['addr'] for i in
-                    ifaddresses(ifaceName).setdefault(
-                        AF_INET, [{'addr': None}])]
-                if None in addresses:
-                    addresses.remove(None)
-                # ignore "lo" (the local loopback)
-                if addresses and ifaceName != "lo":
-                    addr[ifaceName] = addresses[0]
+            addr = get_ifaces()
 
         dot = self.dialog_renderer.render("dot")
 
-        if len(addr) == 0:
+        if len(addr) == 0:  # No IP Address found
             if self.server:
                 LOG.error("No IP Address to return?")
+            # TODO: This should use some per-user configuration value DM
             elif not self.check_for_signal("SKILLS_useDefaultResponses", -1):
                 self.speak_dialog("no network connection", private=True)
             else:
                 self.speak("I'm not connected to a network", private=True)
-
             return
-        elif len(addr) == 1:
-            # self.enclosure.deactivate_mouth_events()
+        if len(addr) == 1:  # Single IP Address to speak
             iface, ip = addr.popitem()
-            # self.enclosure.mouth_text(ip)
-            ip_spoken = ip.replace(".", " " + dot + " ")
+            ip_spoken = ip.replace(".", f" {dot} ")
             if not self.check_for_signal("SKILLS_useDefaultResponses", -1):
                 if public:
                     say_ip = "public"
                 else:
                     say_ip = "local"
-                self.speak_dialog("my address is", {'ip': ip_spoken,
-                                                    'pub': say_ip}, private=True)
+                self.speak_dialog("my address is",
+                                  {'ip': ip_spoken,
+                                   'pub': say_ip}, private=True)
             else:
-                self.speak("my network I.P address is {}".format(ip_spoken), private=True)
+                self.speak("my network I.P address is {}".format(ip_spoken),
+                           private=True)
 
-            if self.gui_enabled:
-                self.gui.show_text(ip, "IP Address")
-                self.clear_gui_timeout()
+            self.gui.show_text(ip, "IP Address")
+            return
 
-            time.sleep((self.LETTERS_PER_SCREEN + len(ip)) *
-                       self.SEC_PER_LETTER)
-        else:
-            for iface in addr:
-                ip = addr[iface]
-                if self.gui_enabled:
-                    self.gui.show_text(ip, iface)
-                    self.clear_gui_timeout()
+        for iface in addr:  # Speak and show all Local IP Addresses
+            ip = addr[iface]
+            self.gui.show_text(ip, iface)
 
-                # self.enclosure.mouth_text(ip)
-                ip_spoken = ip.replace(".", " " + dot + " ")
-                if not self.check_for_signal("SKILLS_useDefaultResponses", -1):
-                    self.speak_dialog("my address on X is Y",
-                                      {'interface': iface, 'ip': ip_spoken}, private=True, wait=True)
-                else:
-                    self.speak("on {} my I.P address is {}.".format(iface, ip_spoken), private=True, wait=True)
+            ip_spoken = ip.replace(".", " " + dot + " ")
+            if not self.check_for_signal("SKILLS_useDefaultResponses", -1):
+                self.speak_dialog("my address on X is Y",
+                                  {'interface': iface, 'ip': ip_spoken},
+                                  private=True, wait=True)
+            else:
+                self.speak(f"on {iface} my I.P address is {ip_spoken}.",
+                           private=True, wait=True)
 
-    def stop(self):
-        pass
+    @staticmethod
+    def _get_public_ip_address() -> str:
+        """
+        Get the public IP address associated with the request
+        :returns: str public IP address
+        """
+        # TODO: Server implementation should get this from request origin
+        return get('https://api.ipify.org').text
 
 
 def create_skill():
