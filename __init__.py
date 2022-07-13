@@ -41,9 +41,10 @@
 # limitations under the License.
 
 from ifaddr import get_adapters
+from neon_utils.user_utils import get_user_prefs
 from requests import get
 from adapt.intent import IntentBuilder
-from neon_utils.skills.neon_skill import NeonSkill, LOG
+from neon_utils.skills.neon_skill import NeonSkill
 
 from mycroft.skills.core import intent_handler
 
@@ -91,10 +92,8 @@ class IPSkill(NeonSkill):
         dot = self.dialog_renderer.render("dot")
 
         if len(addr) == 0:  # No IP Address found
-            if self.server:
-                LOG.error("No IP Address to return?")
-            # TODO: This should use some per-user configuration value DM
-            elif not self.check_for_signal("SKILLS_useDefaultResponses", -1):
+            if not get_user_prefs(message)["response_mode"].get(
+                    "limit_dialog"):
                 self.speak_dialog("no network connection", private=True)
             else:
                 self.speak("I'm not connected to a network", private=True)
@@ -102,7 +101,8 @@ class IPSkill(NeonSkill):
         if len(addr) == 1:  # Single IP Address to speak
             iface, ip = addr.popitem()
             ip_spoken = ip.replace(".", f" {dot} ")
-            if not self.check_for_signal("SKILLS_useDefaultResponses", -1):
+            if not get_user_prefs(message)["response_mode"].get(
+                    "limit_dialog"):
                 if public:
                     say_ip = "public"
                 else:
@@ -122,7 +122,8 @@ class IPSkill(NeonSkill):
             self.gui.show_text(ip, iface)
 
             ip_spoken = ip.replace(".", " " + dot + " ")
-            if not self.check_for_signal("SKILLS_useDefaultResponses", -1):
+            if not get_user_prefs(message)["response_mode"].get(
+                    "limit_dialog"):
                 self.speak_dialog("my address on X is Y",
                                   {'interface': iface, 'ip': ip_spoken},
                                   private=True, wait=True)
