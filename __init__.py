@@ -41,9 +41,10 @@
 # limitations under the License.
 
 from ifaddr import get_adapters
+from neon_utils.user_utils import get_user_prefs
 from requests import get
 from adapt.intent import IntentBuilder
-from neon_utils.skills.neon_skill import NeonSkill, LOG
+from neon_utils.skills.neon_skill import NeonSkill
 
 from mycroft.skills.core import intent_handler
 
@@ -91,10 +92,8 @@ class IPSkill(NeonSkill):
         dot = self.dialog_renderer.render("dot")
 
         if len(addr) == 0:  # No IP Address found
-            if self.server:
-                LOG.error("No IP Address to return?")
-            # TODO: This should use some per-user configuration value DM
-            elif not self.check_for_signal("SKILLS_useDefaultResponses", -1):
+            if not get_user_prefs(message)["response_mode"].get(
+                    "limit_dialog"):
                 self.speak_dialog("no network connection", private=True)
             else:
                 self.speak("I'm not connected to a network", private=True)
@@ -102,17 +101,13 @@ class IPSkill(NeonSkill):
         if len(addr) == 1:  # Single IP Address to speak
             iface, ip = addr.popitem()
             ip_spoken = ip.replace(".", f" {dot} ")
-            if not self.check_for_signal("SKILLS_useDefaultResponses", -1):
-                if public:
-                    say_ip = "public"
-                else:
-                    say_ip = "local"
-                self.speak_dialog("my address is",
-                                  {'ip': ip_spoken,
-                                   'pub': say_ip}, private=True)
+            if public:
+                say_ip = "public"
             else:
-                self.speak("my network I.P address is {}".format(ip_spoken),
-                           private=True)
+                say_ip = "local"
+            self.speak_dialog("my address is",
+                              {'ip': ip_spoken,
+                               'pub': say_ip}, private=True)
 
             self.gui.show_text(ip, "IP Address")
             return
@@ -122,13 +117,9 @@ class IPSkill(NeonSkill):
             self.gui.show_text(ip, iface)
 
             ip_spoken = ip.replace(".", " " + dot + " ")
-            if not self.check_for_signal("SKILLS_useDefaultResponses", -1):
-                self.speak_dialog("my address on X is Y",
-                                  {'interface': iface, 'ip': ip_spoken},
-                                  private=True, wait=True)
-            else:
-                self.speak(f"on {iface} my I.P address is {ip_spoken}.",
-                           private=True, wait=True)
+            self.speak_dialog("my address on X is Y",
+                              {'interface': iface, 'ip': ip_spoken},
+                              private=True, wait=True)
 
     @staticmethod
     def _get_public_ip_address() -> str:
