@@ -5,9 +5,9 @@
     "short_description": "Retrieve the [IP address](https://en.wikipedia.org/wiki/IP_address), also known as the \"network address\" of the Device and respond verbally to the user, and if the Device supports it, display the IP address.",
     "description": "Returns the known IP addresses to the user, if requested. Useful for testing.",
     "examples": [
-        "what's your ip address?",
-        "tell me your ip address.",
-        "what is my public ip address?"
+        "What's your IP address?",
+        "Tell me your IP address.",
+        "What is my public IP address?"
     ],
     "desktopFile": false,
     "warning": "",
