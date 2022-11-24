@@ -191,6 +191,9 @@ class TestSkillLoading(unittest.TestCase):
         self.assertEqual(registered_padatious, self.padatious_intents)
         for lang in self.supported_languages:
             self.assertEqual(set(registered_vocab[lang].keys()), self.vocab)
+            for voc in self.vocab:
+                # Ensure every vocab file has at least one entry
+                self.assertGreater(len(registered_vocab[lang][voc]), 0)
 
     def test_skill_events(self):
         events = self.default_events + self.adapt_intents
