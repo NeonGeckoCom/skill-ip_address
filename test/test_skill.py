@@ -25,10 +25,11 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+import os.path
 import shutil
 import unittest
 import pytest
+import json
 
 from os import mkdir
 from os.path import dirname, join, exists
@@ -39,7 +40,7 @@ from ovos_utils.messagebus import FakeBus
 from mycroft.skills.skill_loader import SkillLoader
 
 
-class TestSkill(unittest.TestCase):
+class TestSkillMethods(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -114,6 +115,94 @@ class TestSkill(unittest.TestCase):
         self.skill.gui.show_text.assert_called_with(
             self.skill._get_public_ip_address(), "IP Address")
         self.skill.gui.show_text = real_show_text
+
+
+class TestSkillLoading(unittest.TestCase):
+    """
+    Test skill loading, intent registration, and langauge support. Test cases
+    are generic, only class variables should be modified per-skill.
+    """
+    from skill_ip_address import IPSkill
+    bus = FakeBus()
+    skill = IPSkill()
+    messages = list()
+
+    # Specify skill ID for testing (can be anything)
+    test_skill_id = 'ip_address.test'
+
+    # Specify valid languages to test
+    supported_languages = ["en-us"]
+
+    # Specify skill intents
+    adapt_intents = [f'{test_skill_id}:IPIntent']
+    padatious_intents = []
+
+    # Specify skill resources
+    vocab = {"query", "ip", "public"}  # Lowercased .voc file basenames
+    dialog = {"dot", "no network connection", "my address is",
+              "my address on X is Y"}
+    # Default Core Events
+    default_events = ["mycroft.skill.enable_intent",
+                      "mycroft.skill.disable_intent",
+                      "mycroft.skill.set_cross_context",
+                      "mycroft.skill.remove_cross_context",
+                      "intent.service.skills.deactivated",
+                      "intent.service.skills.activated",
+                      "mycroft.skills.settings.changed",
+                      "skill.converse.ping",
+                      "skill.converse.request",
+                      f"{test_skill_id}.activate",
+                      f"{test_skill_id}.deactivate"
+                      ]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.bus.on("message", cls._on_message)
+        cls.skill.config_core["secondary_langs"] = cls.supported_languages
+        cls.skill._startup(cls.bus, cls.test_skill_id)
+
+    @classmethod
+    def _on_message(cls, message):
+        cls.messages.append(json.loads(message))
+
+    def test_skill_setup(self):
+        self.assertEqual(self.skill.skill_id, self.test_skill_id)
+        for msg in self.messages:
+            self.assertEqual(msg["context"]["skill_id"], self.test_skill_id)
+
+    def test_intent_registration(self):
+        registered_adapt = list()
+        registered_padatious = list()
+        registered_vocab = dict()
+        for msg in self.messages:
+            if msg["type"] == "register_intent":
+                registered_adapt.append(msg["data"]["name"])
+            elif msg["type"] == "padatious:register_intent":
+                registered_padatious.append(msg["data"]["name"])
+            elif msg["type"] == "register_vocab":
+                lang = msg["data"]["lang"]
+                registered_vocab.setdefault(lang, dict())
+                voc_filename = msg["data"]["entity_type"].replace(
+                    self.test_skill_id.replace('.', '_'), '').lower()
+                registered_vocab[lang].setdefault(voc_filename, list())
+                registered_vocab[lang][voc_filename].append(
+                    msg["data"]["entity_value"])
+        self.assertEqual(registered_adapt, self.adapt_intents)
+        self.assertEqual(registered_padatious, self.padatious_intents)
+        for lang in self.supported_languages:
+            self.assertEqual(set(registered_vocab[lang].keys()), self.vocab)
+
+    def test_skill_events(self):
+        events = self.default_events + self.adapt_intents
+        for event in events:
+            self.assertIn(event, [e[0] for e in self.skill.events])
+
+    def test_dialog_files(self):
+        for lang in self.supported_languages:
+            for dialog in self.dialog:
+                file = self.skill.find_resource(f"{dialog}.dialog", "dialog",
+                                                lang)
+                self.assertTrue(os.path.isfile(file))
 
 
 if __name__ == '__main__':
