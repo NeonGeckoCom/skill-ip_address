@@ -128,7 +128,7 @@ class TestSkillLoading(unittest.TestCase):
     messages = list()
 
     # Specify skill ID for testing (can be anything)
-    test_skill_id = 'ip_address.test'
+    test_skill_id = 'test_skill.test'
 
     # Specify valid languages to test
     supported_languages = ["en-us"]
