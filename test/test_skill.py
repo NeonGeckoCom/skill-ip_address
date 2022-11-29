@@ -134,10 +134,11 @@ class TestSkillLoading(unittest.TestCase):
     supported_languages = ["en-us"]
 
     # Specify skill intents
-    adapt_intents = [f'{test_skill_id}:IPIntent']
-    padatious_intents = []
+    adapt_intents = {f'{test_skill_id}:IPIntent'}
+    padatious_intents = set()
 
     # Specify skill resources
+    regex = set()
     vocab = {"query", "ip", "public"}  # Lowercased .voc file basenames
     dialog = {"dot", "no network connection", "my address is",
               "my address on X is Y"}
@@ -174,6 +175,7 @@ class TestSkillLoading(unittest.TestCase):
         registered_adapt = list()
         registered_padatious = list()
         registered_vocab = dict()
+        registered_regex = dict()
         for msg in self.messages:
             if msg["type"] == "register_intent":
                 registered_adapt.append(msg["data"]["name"])
@@ -181,22 +183,36 @@ class TestSkillLoading(unittest.TestCase):
                 registered_padatious.append(msg["data"]["name"])
             elif msg["type"] == "register_vocab":
                 lang = msg["data"]["lang"]
-                registered_vocab.setdefault(lang, dict())
-                voc_filename = msg["data"]["entity_type"].replace(
-                    self.test_skill_id.replace('.', '_'), '').lower()
-                registered_vocab[lang].setdefault(voc_filename, list())
-                registered_vocab[lang][voc_filename].append(
-                    msg["data"]["entity_value"])
-        self.assertEqual(registered_adapt, self.adapt_intents)
-        self.assertEqual(registered_padatious, self.padatious_intents)
+                if msg['data'].get('regex'):
+                    registered_regex.setdefault(lang, dict())
+                    regex = msg["data"]["regex"].split(
+                        '<', 1)[1].split('>', 1)[0].replace(
+                        self.test_skill_id.replace('.', '_'), '').lower()
+                    registered_regex[lang].setdefault(regex, list())
+                    registered_regex[lang][regex].append(msg["data"]["regex"])
+                else:
+                    registered_vocab.setdefault(lang, dict())
+                    voc_filename = msg["data"]["entity_type"].replace(
+                        self.test_skill_id.replace('.', '_'), '').lower()
+                    registered_vocab[lang].setdefault(voc_filename, list())
+                    registered_vocab[lang][voc_filename].append(
+                        msg["data"]["entity_value"])
+        self.assertEqual(set(registered_adapt), self.adapt_intents)
+        self.assertEqual(set(registered_padatious), self.padatious_intents)
         for lang in self.supported_languages:
-            self.assertEqual(set(registered_vocab[lang].keys()), self.vocab)
+            if self.vocab:
+                self.assertEqual(set(registered_vocab[lang].keys()), self.vocab)
+            if self.regex:
+                self.assertEqual(set(registered_regex[lang].keys()), self.regex)
             for voc in self.vocab:
                 # Ensure every vocab file has at least one entry
                 self.assertGreater(len(registered_vocab[lang][voc]), 0)
+            for rx in self.regex:
+                # Ensure every vocab file has exactly one entry
+                self.assertEqual(len(registered_regex[lang][rx]), 1)
 
     def test_skill_events(self):
-        events = self.default_events + self.adapt_intents
+        events = self.default_events + list(self.adapt_intents)
         for event in events:
             self.assertIn(event, [e[0] for e in self.skill.events])
 
