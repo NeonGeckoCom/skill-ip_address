@@ -122,26 +122,10 @@ class TestSkillLoading(unittest.TestCase):
     Test skill loading, intent registration, and langauge support. Test cases
     are generic, only class variables should be modified per-skill.
     """
-    from skill_ip_address import IPSkill
+    # Static parameters
     bus = FakeBus()
-    skill = IPSkill()
     messages = list()
-
-    # Specify skill ID for testing (can be anything)
     test_skill_id = 'test_skill.test'
-
-    # Specify valid languages to test
-    supported_languages = ["en-us"]
-
-    # Specify skill intents
-    adapt_intents = {f'{test_skill_id}:IPIntent'}
-    padatious_intents = set()
-
-    # Specify skill resources
-    regex = set()
-    vocab = {"query", "ip", "public"}  # Lowercased .voc file basenames
-    dialog = {"dot", "no network connection", "my address is",
-              "my address on X is Y"}
     # Default Core Events
     default_events = ["mycroft.skill.enable_intent",
                       "mycroft.skill.disable_intent",
@@ -155,6 +139,25 @@ class TestSkillLoading(unittest.TestCase):
                       f"{test_skill_id}.activate",
                       f"{test_skill_id}.deactivate"
                       ]
+
+    # Import and initialize installed skill
+    from skill_ip_address import IPSkill
+    skill = IPSkill()
+
+    # Specify valid languages to test
+    supported_languages = ["en-us"]
+
+    # Specify skill intents as sets
+    adapt_intents = {f'{test_skill_id}:IPIntent'}
+    padatious_intents = set()
+
+    # regex entities, not necessarily filenames
+    regex = set()
+    # vocab is lowercase .voc file basenames
+    vocab = {"query", "ip", "public"}
+    # dialog is .dialog file basenames (case-sensitive)
+    dialog = {"dot", "no network connection", "my address is",
+              "my address on X is Y"}
 
     @classmethod
     def setUpClass(cls) -> None:
