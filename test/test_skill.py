@@ -236,5 +236,46 @@ class TestSkillLoading(unittest.TestCase):
                 self.assertTrue(os.path.isfile(file))
 
 
+class TestSkillIntentMatching(unittest.TestCase):
+    # Import and initialize installed skill
+    from skill_ip_address import IPSkill
+    skill = IPSkill()
+
+    # Specify valid languages to intents to list of valid utterances
+    valid_intents = {'en-us': {'IPIntent': ['what is your ip address',
+                                            'what is my ip address',
+                                            'what is my i.p. address',
+                                            'What is your I.P. address?'
+                                            'what is your public ip address'
+                                            ]}}
+
+    from mycroft.skills.intent_service import IntentService
+    bus = FakeBus()
+    intent_service = IntentService(bus)
+    test_skill_id = 'test_skill.test'
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.skill.config_core["secondary_langs"] = list(cls.valid_intents.keys())
+        cls.skill._startup(cls.bus, cls.test_skill_id)
+
+    def test_intents(self):
+        for lang in self.valid_intents.keys():
+            for intent, examples in self.valid_intents[lang].items():
+                intent_event = f'{self.test_skill_id}:{intent}'
+                self.skill.events.remove(intent_event)
+                intent_handler = Mock()
+                self.skill.events.add(intent_event, intent_handler)
+                for utt in examples:
+                    message = Message('test_utterance',
+                                      {"utterances": [utt], "lang": lang})
+                    self.intent_service.handle_utterance(message)
+                    intent_handler.assert_called_once()
+                    intent_message = intent_handler.call_args[0][0]
+                    self.assertIsInstance(intent_message, Message)
+                    self.assertEqual(intent_message.msg_type, intent_event)
+                    intent_handler.reset_mock()
+
+
 if __name__ == '__main__':
     pytest.main()
