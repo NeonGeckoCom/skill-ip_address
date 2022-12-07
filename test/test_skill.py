@@ -241,13 +241,17 @@ class TestSkillIntentMatching(unittest.TestCase):
     from skill_ip_address import IPSkill
     skill = IPSkill()
 
-    # Specify valid languages to intents to list of valid utterances
-    valid_intents = {'en-us': {'IPIntent': ['what is your ip address',
-                                            'what is my ip address',
-                                            'what is my i.p. address',
-                                            'What is your I.P. address?'
-                                            'what is your public ip address'
-                                            ]}}
+    import yaml
+    test_intents = join(dirname(__file__), 'test_intents.yaml')
+    with open(test_intents) as f:
+        valid_intents = yaml.safe_load(f)
+    # # Specify valid languages to intents to list of valid utterances
+    # valid_intents = {'en-us': {'IPIntent': ['what is your ip address',
+    #                                         'what is my ip address',
+    #                                         'what is my i.p. address',
+    #                                         'What is your I.P. address?'
+    #                                         'what is your public ip address'
+    #                                         ]}}
 
     from mycroft.skills.intent_service import IntentService
     bus = FakeBus()
@@ -267,6 +271,11 @@ class TestSkillIntentMatching(unittest.TestCase):
                 intent_handler = Mock()
                 self.skill.events.add(intent_event, intent_handler)
                 for utt in examples:
+                    if isinstance(utt, dict):
+                        data = list(utt.values())[0]
+                        utt = list(utt.keys())[0]
+                    else:
+                        data = list()
                     message = Message('test_utterance',
                                       {"utterances": [utt], "lang": lang})
                     self.intent_service.handle_utterance(message)
@@ -274,6 +283,20 @@ class TestSkillIntentMatching(unittest.TestCase):
                     intent_message = intent_handler.call_args[0][0]
                     self.assertIsInstance(intent_message, Message)
                     self.assertEqual(intent_message.msg_type, intent_event)
+                    for datum in data:
+                        if isinstance(datum, dict):
+                            name = list(datum.keys())[0]
+                            value = list(datum.values())[0]
+                        else:
+                            name = datum
+                            value = None
+                        # We mocked the handler, data is munged
+                        voc_id = f'{self.test_skill_id.replace(".", "_")}{name}'
+                        self.assertIsInstance(intent_message.data.get(voc_id),
+                                              str, intent_message.data)
+                        if value:
+                            self.assertEqual(intent_message.data.get(voc_id),
+                                             value)
                     intent_handler.reset_mock()
 
 
