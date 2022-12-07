@@ -245,13 +245,6 @@ class TestSkillIntentMatching(unittest.TestCase):
     test_intents = join(dirname(__file__), 'test_intents.yaml')
     with open(test_intents) as f:
         valid_intents = yaml.safe_load(f)
-    # # Specify valid languages to intents to list of valid utterances
-    # valid_intents = {'en-us': {'IPIntent': ['what is your ip address',
-    #                                         'what is my ip address',
-    #                                         'what is my i.p. address',
-    #                                         'What is your I.P. address?'
-    #                                         'what is your public ip address'
-    #                                         ]}}
 
     from mycroft.skills.intent_service import IntentService
     bus = FakeBus()
