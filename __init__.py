@@ -45,6 +45,8 @@ from neon_utils.user_utils import get_user_prefs
 from requests import get
 from adapt.intent import IntentBuilder
 from neon_utils.skills.neon_skill import NeonSkill
+from ovos_utils import classproperty
+from ovos_utils.process_utils import RuntimeRequirements
 
 from mycroft.skills.core import intent_handler
 
@@ -74,6 +76,18 @@ def get_ifaces(ignore_list=None):
 class IPSkill(NeonSkill):
     def __init__(self):
         super(IPSkill, self).__init__(name="IPSkill")
+
+    @classproperty
+    def runtime_requirements(self):
+        return RuntimeRequirements(network_before_load=False,
+                                   internet_before_load=False,
+                                   gui_before_load=False,
+                                   requires_internet=True,  # TODO: Refactor to handle no internet
+                                   requires_network=True,
+                                   requires_gui=False,
+                                   no_internet_fallback=True,
+                                   no_network_fallback=False,
+                                   no_gui_fallback=True)
 
     @intent_handler(IntentBuilder("IPIntent").require("query").require("IP")
                     .optionally("public"))
