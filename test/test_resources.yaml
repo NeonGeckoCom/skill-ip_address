@@ -16,6 +16,8 @@ dialog:
   - my address is
   - my address on X is Y
   - no network connection
+  - word_public
+  - word_local
 # regex entities, not necessarily filenames
 regex: []
 intents:

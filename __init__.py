@@ -116,9 +116,9 @@ class IPSkill(NeonSkill):
             iface, ip = addr.popitem()
             ip_spoken = ip.replace(".", f" {dot} ")
             if public:
-                say_ip = "public"
+                say_ip = self.translate("word_public")
             else:
-                say_ip = "local"
+                say_ip = self.translate("word_local")
             self.speak_dialog("my address is",
                               {'ip': ip_spoken,
                                'pub': say_ip}, private=True)
