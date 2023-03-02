@@ -25,10 +25,11 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+import os.path
 import shutil
 import unittest
 import pytest
+import json
 
 from os import mkdir
 from os.path import dirname, join, exists
@@ -39,7 +40,7 @@ from ovos_utils.messagebus import FakeBus
 from mycroft.skills.skill_loader import SkillLoader
 
 
-class TestSkill(unittest.TestCase):
+class TestSkillMethods(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:

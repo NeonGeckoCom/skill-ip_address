@@ -1,0 +1,28 @@
+# Specify resources to test here.
+
+# Specify languages to be tested
+languages:
+  - "en-us"
+
+# vocab is lowercase .voc file basenames
+vocab:
+  - ip
+  - public
+  - query
+
+# dialog is .dialog file basenames (case-sensitive)
+dialog:
+  - dot
+  - my address is
+  - my address on X is Y
+  - no network connection
+  - word_public
+  - word_local
+# regex entities, not necessarily filenames
+regex: []
+intents:
+  # Padatious intents are the `.intent` file names
+  padatious: []
+  # Adapt intents are the name passed to the constructor
+  adapt:
+    - IPIntent
