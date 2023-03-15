@@ -91,7 +91,7 @@ setup(
     install_requires=get_requirements("requirements.txt"),
     author='Neongecko',
     author_email='developers@neon.ai',
-    description="Neon Unknown Fallback Skill",
+    description="Neon IP Address Skill",
     long_description=long_description,
     long_description_content_type="text/markdown",
     package_dir={SKILL_PKG: ""},
