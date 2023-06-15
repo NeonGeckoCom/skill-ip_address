@@ -74,9 +74,6 @@ def get_ifaces(ignore_list=None):
 
 
 class IPSkill(NeonSkill):
-    def __init__(self):
-        super(IPSkill, self).__init__(name="IPSkill")
-
     @classproperty
     def runtime_requirements(self):
         return RuntimeRequirements(network_before_load=False,
@@ -143,7 +140,3 @@ class IPSkill(NeonSkill):
         """
         # TODO: Server implementation should get this from request origin
         return get('https://api.ipify.org').text
-
-
-def create_skill():
-    return IPSkill()
