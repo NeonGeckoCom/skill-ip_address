@@ -30,3 +30,11 @@ en-us:
   - What is your I.P. address?
   - what is my public IP address?:
     - public: public
+
+uk-ua:
+  IPIntent:
+  - IP-адреса
+  - ай пі адреса
+  - мережева адреса
+  - ай пі
+  - мережа
