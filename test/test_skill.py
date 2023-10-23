@@ -36,7 +36,6 @@ from mock import Mock
 from mycroft_bus_client import Message
 from ovos_utils.messagebus import FakeBus
 
-from mycroft.skills.skill_loader import SkillLoader
 
 
 class TestSkillMethods(unittest.TestCase):
@@ -48,6 +47,8 @@ class TestSkillMethods(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        from mycroft.skills.skill_loader import SkillLoader
+
         bus = FakeBus()
         bus.run_in_thread()
         skill_loader = SkillLoader(bus, dirname(dirname(__file__)))
