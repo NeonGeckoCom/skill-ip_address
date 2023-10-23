@@ -37,7 +37,6 @@ from mycroft_bus_client import Message
 from ovos_utils.messagebus import FakeBus
 
 
-
 class TestSkillMethods(unittest.TestCase):
     test_fs = join(dirname(__file__), "skill_fs")
     data_dir = join(test_fs, "data")
@@ -47,7 +46,7 @@ class TestSkillMethods(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        from mycroft.skills.skill_loader import SkillLoader
+        from ovos_workshop.skill_launcher import SkillLoader
 
         bus = FakeBus()
         bus.run_in_thread()
