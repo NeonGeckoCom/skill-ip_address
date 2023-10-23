@@ -25,13 +25,12 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-import os.path
+
 import shutil
 import unittest
 import pytest
-import json
 
-from os import mkdir
+from os import mkdir, environ
 from os.path import dirname, join, exists
 from mock import Mock
 from mycroft_bus_client import Message
@@ -41,6 +40,11 @@ from mycroft.skills.skill_loader import SkillLoader
 
 
 class TestSkillMethods(unittest.TestCase):
+    test_fs = join(dirname(__file__), "skill_fs")
+    data_dir = join(test_fs, "data")
+    conf_dir = join(test_fs, "config")
+    environ["XDG_DATA_HOME"] = data_dir
+    environ["XDG_CONFIG_HOME"] = conf_dir
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -51,13 +55,13 @@ class TestSkillMethods(unittest.TestCase):
         cls.skill = skill_loader.instance
 
         # Define a directory to use for testing
-        cls.test_fs = join(dirname(__file__), "skill_fs")
-        if not exists(cls.test_fs):
-            mkdir(cls.test_fs)
+        # cls.test_fs = join(dirname(__file__), "skill_fs")
+        # if not exists(cls.test_fs):
+        #     mkdir(cls.test_fs)
 
-        # Override the fs paths to use the test directory
-        cls.skill.settings_write_path = cls.test_fs
-        cls.skill.file_system.path = cls.test_fs
+        # # Override the fs paths to use the test directory
+        # cls.skill.settings_write_path = cls.test_fs
+        # cls.skill.file_system.path = cls.test_fs
 
         # Override speak and speak_dialog to test passed arguments
         cls.skill.speak = Mock()
