@@ -1,14 +1,40 @@
 # Changelog
 
-## [0.1.1a2](https://github.com/NeonGeckoCom/skill-ip_address/tree/0.1.1a2) (2023-06-15)
+## [1.0.1a4](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.0.1a4) (2023-12-15)
 
-[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/0.1.0...0.1.1a2)
+[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.0.1a3...1.0.1a4)
 
 **Merged pull requests:**
 
-- Update automation to current best practices [\#40](https://github.com/NeonGeckoCom/skill-ip_address/pull/40) ([NeonDaniel](https://github.com/NeonDaniel))
-- Deprecate `create_skill` method and update `__init__` for best practices [\#39](https://github.com/NeonGeckoCom/skill-ip_address/pull/39) ([NeonDaniel](https://github.com/NeonDaniel))
-- Fix typo in setup.py description [\#37](https://github.com/NeonGeckoCom/skill-ip_address/pull/37) ([NeonDaniel](https://github.com/NeonDaniel))
+- Update tests and automation to extend neon-minerva test case [\#47](https://github.com/NeonGeckoCom/skill-ip_address/pull/47) ([NeonDaniel](https://github.com/NeonDaniel))
+
+## [1.0.1a3](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.0.1a3) (2023-10-26)
+
+[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.0.1a2...1.0.1a3)
+
+**Fixed bugs:**
+
+- \[BUG\] AttributeError: 'IPSkill' object has no attribute '\_settings\_path' [\#45](https://github.com/NeonGeckoCom/skill-ip_address/issues/45)
+
+**Merged pull requests:**
+
+- Update neon-utils dependency to validate fix [\#46](https://github.com/NeonGeckoCom/skill-ip_address/pull/46) ([NeonDaniel](https://github.com/NeonDaniel))
+
+## [1.0.1a2](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.0.1a2) (2023-10-23)
+
+[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.0.1a1...1.0.1a2)
+
+**Merged pull requests:**
+
+- Ukrainian Translation and Intent tests [\#26](https://github.com/NeonGeckoCom/skill-ip_address/pull/26) ([NeonMariia](https://github.com/NeonMariia))
+
+## [1.0.1a1](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.0.1a1) (2023-10-23)
+
+[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.0.0...1.0.1a1)
+
+**Merged pull requests:**
+
+- Update unit test init to account for upstream Skill class changes [\#44](https://github.com/NeonGeckoCom/skill-ip_address/pull/44) ([NeonDaniel](https://github.com/NeonDaniel))
 
 
 
