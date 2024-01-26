@@ -47,6 +47,7 @@ from requests import get
 from adapt.intent import IntentBuilder
 from neon_utils.skills.neon_skill import NeonSkill
 from ovos_utils import classproperty
+from ovos_utils.log import LOG
 from ovos_utils.process_utils import RuntimeRequirements
 from ovos_bus_client.message import Message
 from ovos_workshop.decorators import intent_handler
@@ -65,6 +66,7 @@ def get_ifaces(ignore_list: List[str] = None, message: Message = None) -> dict:
         remote_ip = message.context['node_data'].get('networking',
                                                      {}).get('local_ip')
         if remote_ip:
+            LOG.info(f"Got node IP from context: {remote_ip}")
             return {"node": remote_ip}
 
     ignore_list = ignore_list or ['lo']
@@ -148,4 +150,5 @@ class IPSkill(NeonSkill):
         if message and message.context.get('node_data'):
             public_addr = message.context['node_data'].get('networking',
                                                            {}).get('public_ip')
+            LOG.info(f"Got public IP from context: {public_addr}")
         return public_addr or get('https://api.ipify.org').text
