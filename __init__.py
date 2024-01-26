@@ -40,6 +40,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import List
 from ifaddr import get_adapters
 from neon_utils.user_utils import get_user_prefs
 from requests import get
@@ -47,20 +48,25 @@ from adapt.intent import IntentBuilder
 from neon_utils.skills.neon_skill import NeonSkill
 from ovos_utils import classproperty
 from ovos_utils.process_utils import RuntimeRequirements
-
-from mycroft.skills.core import intent_handler
+from ovos_bus_client.message import Message
+from ovos_workshop.decorators import intent_handler
 
 
 # TODO: Add something equivalent to neon_utils.net_utils
-def get_ifaces(ignore_list=None):
-    """ Build a dict with device names and their associated ip address.
-
-    Arguments:
-        ignore_list(list): list of devices to ignore. Defaults to "lo"
-
+def get_ifaces(ignore_list: List[str] = None, message: Message = None) -> dict:
+    """
+    Build a dict with device names and their associated ip address.
+    @param ignore_list: list of devices to ignore. Defaults to "lo"
+    @param message: Message associated with request
     Returns:
         (dict) with device names as keys and ip addresses as value.
     """
+    if message and message.context.get('node_data'):
+        remote_ip = message.context['node_data'].get('networking',
+                                                     {}).get('local_ip')
+        if remote_ip:
+            return {"node": remote_ip}
+
     ignore_list = ignore_list or ['lo']
     res = {}
     for iface in get_adapters():
@@ -95,10 +101,10 @@ class IPSkill(NeonSkill):
         """
         if message.data.get("public"):
             public = True
-            addr = {'public': self._get_public_ip_address()}
+            addr = {'public': self._get_public_ip_address(message)}
         else:
             public = False
-            addr = get_ifaces()
+            addr = get_ifaces(message=message)
 
         dot = self.dialog_renderer.render("dot")
 
@@ -133,10 +139,13 @@ class IPSkill(NeonSkill):
                               private=True, wait=True)
 
     @staticmethod
-    def _get_public_ip_address() -> str:
+    def _get_public_ip_address(message) -> str:
         """
         Get the public IP address associated with the request
         :returns: str public IP address
         """
-        # TODO: Server implementation should get this from request origin
-        return get('https://api.ipify.org').text
+        public_addr = None
+        if message.context.get('node_data'):
+            public_addr = message.context['node_data'].get('networking',
+                                                           {}).get('public_ip')
+        return public_addr or get('https://api.ipify.org').text
