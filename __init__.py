@@ -139,13 +139,13 @@ class IPSkill(NeonSkill):
                               private=True, wait=True)
 
     @staticmethod
-    def _get_public_ip_address(message) -> str:
+    def _get_public_ip_address(message: Message = None) -> str:
         """
         Get the public IP address associated with the request
         :returns: str public IP address
         """
         public_addr = None
-        if message.context.get('node_data'):
+        if message and message.context.get('node_data'):
             public_addr = message.context['node_data'].get('networking',
                                                            {}).get('public_ip')
         return public_addr or get('https://api.ipify.org').text
