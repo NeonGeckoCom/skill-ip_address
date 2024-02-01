@@ -26,15 +26,10 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import shutil
-import unittest
 import pytest
 
-from os import environ
-from os.path import dirname, join
 from mock import Mock
 from mycroft_bus_client import Message
-from ovos_utils.messagebus import FakeBus
 
 from neon_minerva.tests.skill_unit_test_base import SkillTestCase
 
