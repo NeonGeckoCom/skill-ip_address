@@ -1,40 +1,36 @@
 # Changelog
 
-## [1.0.1a4](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.0.1a4) (2023-12-15)
+## [1.1.1a4](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.1.1a4) (2024-04-01)
 
-[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.0.1a3...1.0.1a4)
-
-**Merged pull requests:**
-
-- Update tests and automation to extend neon-minerva test case [\#47](https://github.com/NeonGeckoCom/skill-ip_address/pull/47) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [1.0.1a3](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.0.1a3) (2023-10-26)
-
-[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.0.1a2...1.0.1a3)
-
-**Fixed bugs:**
-
-- \[BUG\] AttributeError: 'IPSkill' object has no attribute '\_settings\_path' [\#45](https://github.com/NeonGeckoCom/skill-ip_address/issues/45)
+[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.1.1a3...1.1.1a4)
 
 **Merged pull requests:**
 
-- Update neon-utils dependency to validate fix [\#46](https://github.com/NeonGeckoCom/skill-ip_address/pull/46) ([NeonDaniel](https://github.com/NeonDaniel))
+- Update test dependency to stable spec [\#52](https://github.com/NeonGeckoCom/skill-ip_address/pull/52) ([NeonDaniel](https://github.com/NeonDaniel))
 
-## [1.0.1a2](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.0.1a2) (2023-10-23)
+## [1.1.1a3](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.1.1a3) (2024-02-01)
 
-[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.0.1a1...1.0.1a2)
-
-**Merged pull requests:**
-
-- Ukrainian Translation and Intent tests [\#26](https://github.com/NeonGeckoCom/skill-ip_address/pull/26) ([NeonMariia](https://github.com/NeonMariia))
-
-## [1.0.1a1](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.0.1a1) (2023-10-23)
-
-[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.0.0...1.0.1a1)
+[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.1.1a2...1.1.1a3)
 
 **Merged pull requests:**
 
-- Update unit test init to account for upstream Skill class changes [\#44](https://github.com/NeonGeckoCom/skill-ip_address/pull/44) ([NeonDaniel](https://github.com/NeonDaniel))
+- Support ovos-utils 0.1 [\#51](https://github.com/NeonGeckoCom/skill-ip_address/pull/51) ([NeonDaniel](https://github.com/NeonDaniel))
+
+## [1.1.1a2](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.1.1a2) (2024-01-26)
+
+[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.1.1a1...1.1.1a2)
+
+**Merged pull requests:**
+
+- Update logging and English vocabulary [\#50](https://github.com/NeonGeckoCom/skill-ip_address/pull/50) ([NeonDaniel](https://github.com/NeonDaniel))
+
+## [1.1.1a1](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.1.1a1) (2024-01-26)
+
+[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.1.0...1.1.1a1)
+
+**Merged pull requests:**
+
+- Support Node devices [\#49](https://github.com/NeonGeckoCom/skill-ip_address/pull/49) ([NeonDaniel](https://github.com/NeonDaniel))
 
 
 
