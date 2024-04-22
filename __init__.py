@@ -51,6 +51,7 @@ from ovos_utils.log import LOG
 from ovos_utils.process_utils import RuntimeRequirements
 from ovos_bus_client.message import Message
 from ovos_workshop.decorators import intent_handler
+from lingua_franca.format import pronounce_number
 
 
 # TODO: Add something equivalent to neon_utils.net_utils
@@ -119,7 +120,8 @@ class IPSkill(NeonSkill):
             return
         if len(addr) == 1:  # Single IP Address to speak
             iface, ip = addr.popitem()
-            ip_spoken = ip.replace(".", f" {dot} ")
+            ip_spoken = f" {dot} ".join([pronounce_number(part)
+                                         for part in ip.split('.')])
             if public:
                 say_ip = self.translate("word_public")
             else:
