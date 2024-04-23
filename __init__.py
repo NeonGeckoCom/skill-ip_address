@@ -122,7 +122,7 @@ class IPSkill(NeonSkill):
             return
         if len(addr) == 1:  # Single IP Address to speak
             iface, ip = addr.popitem()
-            ip_spoken = f" {dot} ".join([pronounce_number(part)
+            ip_spoken = f" {dot} ".join([pronounce_number(int(part))
                                          for part in ip.split('.')])
             if public:
                 say_ip = self.translate("word_public")
