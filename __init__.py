@@ -111,7 +111,7 @@ class IPSkill(NeonSkill):
             public = False
             addr = get_ifaces(message=message)
 
-        dot = self.dialog_renderer.render("dot")
+        dot = self.resources.render_dialog("dot")
 
         if len(addr) == 0:  # No IP Address found
             if not get_user_prefs(message)["response_mode"].get(
@@ -125,9 +125,9 @@ class IPSkill(NeonSkill):
             ip_spoken = f" {dot} ".join([pronounce_number(int(part))
                                          for part in ip.split('.')])
             if public:
-                say_ip = self.translate("word_public")
+                say_ip = self.resources.render_dialog("word_public")
             else:
-                say_ip = self.translate("word_local")
+                say_ip = self.resources.render_dialog("word_local")
             self.speak_dialog("my address is",
                               {'ip': ip_spoken,
                                'pub': say_ip}, private=True)
