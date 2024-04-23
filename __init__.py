@@ -42,6 +42,7 @@
 
 from typing import List
 from ifaddr import get_adapters
+from lingua_franca import load_language
 from neon_utils.user_utils import get_user_prefs
 from requests import get
 from adapt.intent import IntentBuilder
@@ -102,6 +103,7 @@ class IPSkill(NeonSkill):
         Handle a user request for the IP Address
         :param message: Message associated with request
         """
+        load_language(self.lang)
         if message.data.get("public"):
             public = True
             addr = {'public': self._get_public_ip_address(message)}
