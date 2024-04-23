@@ -111,8 +111,6 @@ class IPSkill(NeonSkill):
             public = False
             addr = get_ifaces(message=message)
 
-        dot = self.resources.render_dialog("dot")
-
         if len(addr) == 0:  # No IP Address found
             if not get_user_prefs(message)["response_mode"].get(
                     "limit_dialog"):
@@ -120,6 +118,9 @@ class IPSkill(NeonSkill):
             else:
                 self.speak("I'm not connected to a network", private=True)
             return
+
+        dot = self.resources.render_dialog("dot")
+
         if len(addr) == 1:  # Single IP Address to speak
             iface, ip = addr.popitem()
             ip_spoken = f" {dot} ".join([pronounce_number(int(part))
