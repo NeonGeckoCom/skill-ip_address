@@ -42,6 +42,7 @@
 
 from typing import List
 from ifaddr import get_adapters
+from lingua_franca import load_language
 from neon_utils.user_utils import get_user_prefs
 from requests import get
 from adapt.intent import IntentBuilder
@@ -51,6 +52,7 @@ from ovos_utils.log import LOG
 from ovos_utils.process_utils import RuntimeRequirements
 from ovos_bus_client.message import Message
 from ovos_workshop.decorators import intent_handler
+from lingua_franca.format import pronounce_number
 
 
 # TODO: Add something equivalent to neon_utils.net_utils
@@ -101,14 +103,13 @@ class IPSkill(NeonSkill):
         Handle a user request for the IP Address
         :param message: Message associated with request
         """
+        load_language(self.lang)
         if message.data.get("public"):
             public = True
             addr = {'public': self._get_public_ip_address(message)}
         else:
             public = False
             addr = get_ifaces(message=message)
-
-        dot = self.dialog_renderer.render("dot")
 
         if len(addr) == 0:  # No IP Address found
             if not get_user_prefs(message)["response_mode"].get(
@@ -117,13 +118,17 @@ class IPSkill(NeonSkill):
             else:
                 self.speak("I'm not connected to a network", private=True)
             return
+
+        dot = self.resources.render_dialog("dot")
+
         if len(addr) == 1:  # Single IP Address to speak
             iface, ip = addr.popitem()
-            ip_spoken = ip.replace(".", f" {dot} ")
+            ip_spoken = f" {dot} ".join([pronounce_number(int(part))
+                                         for part in ip.split('.')])
             if public:
-                say_ip = self.translate("word_public")
+                say_ip = self.resources.render_dialog("word_public")
             else:
-                say_ip = self.translate("word_local")
+                say_ip = self.resources.render_dialog("word_local")
             self.speak_dialog("my address is",
                               {'ip': ip_spoken,
                                'pub': say_ip}, private=True)
