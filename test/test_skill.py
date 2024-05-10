@@ -29,7 +29,7 @@
 import pytest
 
 from mock import Mock
-from mycroft_bus_client import Message
+from ovos_bus_client.message import Message
 
 from neon_minerva.tests.skill_unit_test_base import SkillTestCase
 
