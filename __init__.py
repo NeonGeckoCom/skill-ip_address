@@ -157,7 +157,7 @@ class IPSkill(NeonSkill):
             LOG.info(f"Got public IP from context: {public_addr}")
         if not public_addr:
             hana_url = self.config_core.get('hana', {}).get('url') or \
-                       "https://hana.neonaiservices.com"
+                       "https://hana.neonaibeta.com"  # TODO: Update to neonaiservices after HANA 0.2 release
             public_addr = get(f"{hana_url}/util/client_ip").text
             LOG.info(f"Got public IP from HANA: {public_addr}")
         return public_addr
