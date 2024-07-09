@@ -145,8 +145,7 @@ class IPSkill(NeonSkill):
                               {'interface': iface, 'ip': ip_spoken},
                               private=True, wait=True)
 
-    @staticmethod
-    def _get_public_ip_address(message: Message = None) -> str:
+    def _get_public_ip_address(self, message: Message = None) -> str:
         """
         Get the public IP address associated with the request
         :returns: str public IP address
@@ -156,4 +155,9 @@ class IPSkill(NeonSkill):
             public_addr = message.context['node_data'].get('networking',
                                                            {}).get('public_ip')
             LOG.info(f"Got public IP from context: {public_addr}")
-        return public_addr or get('https://api.ipify.org').text
+        if not public_addr:
+            hana_url = self.config_core.get('hana', {}).get('url') or \
+                       "https://hana.neonaiservices.com"
+            public_addr = get(f"{hana_url}/util/client_ip").text
+            LOG.info(f"Got public IP from HANA: {public_addr}")
+        return public_addr
