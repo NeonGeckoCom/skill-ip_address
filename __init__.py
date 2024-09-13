@@ -45,13 +45,13 @@ from ifaddr import get_adapters
 from lingua_franca import load_language
 from neon_utils.user_utils import get_user_prefs
 from requests import get
-from adapt.intent import IntentBuilder
 from neon_utils.skills.neon_skill import NeonSkill
 from ovos_utils import classproperty
 from ovos_utils.log import LOG
 from ovos_utils.process_utils import RuntimeRequirements
 from ovos_bus_client.message import Message
 from ovos_workshop.decorators import intent_handler
+from ovos_workshop.intents import IntentBuilder
 from lingua_franca.format import pronounce_number
 
 
