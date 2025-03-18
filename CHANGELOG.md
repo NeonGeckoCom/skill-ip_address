@@ -1,36 +1,52 @@
 # Changelog
 
-## [1.1.1a4](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.1.1a4) (2024-04-01)
+## [1.2.1a6](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.2.1a6) (2025-03-11)
 
-[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.1.1a3...1.1.1a4)
-
-**Merged pull requests:**
-
-- Update test dependency to stable spec [\#52](https://github.com/NeonGeckoCom/skill-ip_address/pull/52) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [1.1.1a3](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.1.1a3) (2024-02-01)
-
-[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.1.1a2...1.1.1a3)
+[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.2.1a5...1.2.1a6)
 
 **Merged pull requests:**
 
-- Support ovos-utils 0.1 [\#51](https://github.com/NeonGeckoCom/skill-ip_address/pull/51) ([NeonDaniel](https://github.com/NeonDaniel))
+- Update automation, gitignore, and license notices [\#59](https://github.com/NeonGeckoCom/skill-ip_address/pull/59) ([NeonDaniel](https://github.com/NeonDaniel))
 
-## [1.1.1a2](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.1.1a2) (2024-01-26)
+## [1.2.1a5](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.2.1a5) (2024-09-13)
 
-[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.1.1a1...1.1.1a2)
-
-**Merged pull requests:**
-
-- Update logging and English vocabulary [\#50](https://github.com/NeonGeckoCom/skill-ip_address/pull/50) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [1.1.1a1](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.1.1a1) (2024-01-26)
-
-[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.1.0...1.1.1a1)
+[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.2.1a4...1.2.1a5)
 
 **Merged pull requests:**
 
-- Support Node devices [\#49](https://github.com/NeonGeckoCom/skill-ip_address/pull/49) ([NeonDaniel](https://github.com/NeonDaniel))
+- Update OVOS dependencies to allow 0.x versions [\#58](https://github.com/NeonGeckoCom/skill-ip_address/pull/58) ([NeonDaniel](https://github.com/NeonDaniel))
+
+## [1.2.1a4](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.2.1a4) (2024-07-09)
+
+[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.2.1a3...1.2.1a4)
+
+**Fixed bugs:**
+
+- \[BUG\] Error getting public IP Address [\#56](https://github.com/NeonGeckoCom/skill-ip_address/issues/56)
+
+**Merged pull requests:**
+
+- Replace Ipify API call with HANA [\#57](https://github.com/NeonGeckoCom/skill-ip_address/pull/57) ([NeonDaniel](https://github.com/NeonDaniel))
+
+## [1.2.1a3](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.2.1a3) (2024-05-10)
+
+[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.2.1a2...1.2.1a3)
+
+**Merged pull requests:**
+
+- Remove `mycroft_bus_client` import [\#55](https://github.com/NeonGeckoCom/skill-ip_address/pull/55) ([NeonDaniel](https://github.com/NeonDaniel))
+
+## [1.2.1a2](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.2.1a2) (2024-04-29)
+
+[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.2.1a1...1.2.1a2)
+
+**Merged pull requests:**
+
+- Pronounce IP segments instead of passing numerals to TTS [\#54](https://github.com/NeonGeckoCom/skill-ip_address/pull/54) ([NeonDaniel](https://github.com/NeonDaniel))
+
+## [1.2.1a1](https://github.com/NeonGeckoCom/skill-ip_address/tree/1.2.1a1) (2024-04-22)
+
+[Full Changelog](https://github.com/NeonGeckoCom/skill-ip_address/compare/1.2.0...1.2.1a1)
 
 
 
