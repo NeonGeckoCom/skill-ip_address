@@ -1,6 +1,6 @@
 # NEON AI (TM) SOFTWARE, Software Development Kit & Application Framework
 # All trademark and other rights reserved by their respective owners
-# Copyright 2008-2022 Neongecko.com Inc.
+# Copyright 2008-2025 Neongecko.com Inc.
 # Contributors: Daniel McKnight, Guy Daniels, Elon Gasper, Richard Leeds,
 # Regina Bloomstine, Casimiro Ferreira, Andrii Pernatii, Kirill Hrymailo
 # BSD-3 License
@@ -42,15 +42,17 @@
 
 from typing import List
 from ifaddr import get_adapters
+from lingua_franca import load_language
 from neon_utils.user_utils import get_user_prefs
 from requests import get
-from adapt.intent import IntentBuilder
 from neon_utils.skills.neon_skill import NeonSkill
 from ovos_utils import classproperty
 from ovos_utils.log import LOG
 from ovos_utils.process_utils import RuntimeRequirements
 from ovos_bus_client.message import Message
 from ovos_workshop.decorators import intent_handler
+from ovos_workshop.intents import IntentBuilder
+from lingua_franca.format import pronounce_number
 
 
 # TODO: Add something equivalent to neon_utils.net_utils
@@ -101,14 +103,13 @@ class IPSkill(NeonSkill):
         Handle a user request for the IP Address
         :param message: Message associated with request
         """
+        load_language(self.lang)
         if message.data.get("public"):
             public = True
             addr = {'public': self._get_public_ip_address(message)}
         else:
             public = False
             addr = get_ifaces(message=message)
-
-        dot = self.dialog_renderer.render("dot")
 
         if len(addr) == 0:  # No IP Address found
             if not get_user_prefs(message)["response_mode"].get(
@@ -117,13 +118,17 @@ class IPSkill(NeonSkill):
             else:
                 self.speak("I'm not connected to a network", private=True)
             return
+
+        dot = self.resources.render_dialog("dot")
+
         if len(addr) == 1:  # Single IP Address to speak
             iface, ip = addr.popitem()
-            ip_spoken = ip.replace(".", f" {dot} ")
+            ip_spoken = f" {dot} ".join([pronounce_number(int(part))
+                                         for part in ip.split('.')])
             if public:
-                say_ip = self.translate("word_public")
+                say_ip = self.resources.render_dialog("word_public")
             else:
-                say_ip = self.translate("word_local")
+                say_ip = self.resources.render_dialog("word_local")
             self.speak_dialog("my address is",
                               {'ip': ip_spoken,
                                'pub': say_ip}, private=True)
@@ -140,8 +145,7 @@ class IPSkill(NeonSkill):
                               {'interface': iface, 'ip': ip_spoken},
                               private=True, wait=True)
 
-    @staticmethod
-    def _get_public_ip_address(message: Message = None) -> str:
+    def _get_public_ip_address(self, message: Message = None) -> str:
         """
         Get the public IP address associated with the request
         :returns: str public IP address
@@ -151,4 +155,9 @@ class IPSkill(NeonSkill):
             public_addr = message.context['node_data'].get('networking',
                                                            {}).get('public_ip')
             LOG.info(f"Got public IP from context: {public_addr}")
-        return public_addr or get('https://api.ipify.org').text
+        if not public_addr:
+            hana_url = self.config_core.get('hana', {}).get('url') or \
+                       "https://hana.neonaibeta.com"  # TODO: Update to neonaiservices after HANA 0.2 release
+            public_addr = get(f"{hana_url}/util/client_ip").text
+            LOG.info(f"Got public IP from HANA: {public_addr}")
+        return public_addr
